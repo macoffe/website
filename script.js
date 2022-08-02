@@ -1,57 +1,27 @@
-const url_api_post='http://127.0.0.1:8000/';
-const url_api_get = 'http://127.0.0.1:8000/infos';
-
-window.addEventListener("load", function () {
-
-    // fetch l'api pour récupérer les données.
-    function getData() {
-      fetch(url_api_get)
-      .then(
-      response => response.json()
-      ).then(function(json) {
-      document.getElementById("temperature").innerHTML = json.temperature
-      document.getElementById("distance").innerHTML = json.distance
-      document.getElementById("humidite").innerHTML = json.humidite
-      });
+function includeHTML() {
+  var z, i, elmnt, file, xhttp;
+  /* Loop through a collection of all HTML elements: */
+  z = document.getElementsByTagName("*");
+  for (i = 0; i < z.length; i++) {
+    elmnt = z[i];
+    /*search for elements with a certain atrribute:*/
+    file = elmnt.getAttribute("w3-include-html");
+    if (file) {
+      /* Make an HTTP request using the attribute value as the file name: */
+      xhttp = new XMLHttpRequest();
+      xhttp.onreadystatechange = function() {
+        if (this.readyState == 4) {
+          if (this.status == 200) {elmnt.innerHTML = this.responseText;}
+          if (this.status == 404) {elmnt.innerHTML = "Page not found.";}
+          /* Remove the attribute, and call this function once more: */
+          elmnt.removeAttribute("w3-include-html");
+          includeHTML();
+        }
+      }
+      xhttp.open("GET", file, true);
+      xhttp.send();
+      /* Exit the function: */
+      return;
     }
-
-    function sendData() {
-      var XHR = new XMLHttpRequest();
-      var FD = new FormData(form);
-      // alerte de réussite.
-      XHR.addEventListener("load", function(event) {
-        alert("Données envoyées !");
-      });
-      // alerte d'erreur.
-      XHR.addEventListener("error", function(event) {
-        alert('erreur');
-       });
-      // configuration de la requête
-      XHR.open("POST", url_api_post);
-      // récupération et envoi des données du formulaire en json, avec cast des switch pour aider l'api.
-      switch1 = String(FD.get('switch1'));
-      switch2 = String(FD.get('switch2'));
-      switch3 = String(FD.get('switch3'));
-      range1 = FD.get('range1');
-      range2 = FD.get('range2');
-      range3 = FD.get('range3');
-      range4 = FD.get('range4');
-      console.log({ switch1 }, { switch2 }, { switch3 }, { range1 }, { range2 }, { range3 }, { range4 }); //si besoin debug
-      XHR.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-      XHR.send(JSON.stringify({"switch1": switch1, "switch2": switch2, "switch3": switch3, "range1": range1, "range2": range2, "range3": range3, "range4": range4}));
-    }
-
-    // récupère les données toutes les 5s.
-    getData();
-    t=setInterval(getData,5000);
-
-    // récupération du formulaire.
-    var form = document.getElementById("data");
-
-    // fonction utilisée lors de la soumission du formulaire.
-    form.addEventListener("submit", function (event) {
-      event.preventDefault();
-      sendData();
-    });
-
-  });
+  }
+}
