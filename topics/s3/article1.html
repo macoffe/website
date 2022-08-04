@@ -1,5 +1,5 @@
 <p>
-    <h5 id="1-create-bucket-user-group-and-policy">1 - create bucket, user, group and policy</h5>
+    <p>1 - create bucket, user, group and policy</p>
     <ul>
     <li>create alias to manipulate minio instance:</li>
     </ul>
@@ -49,12 +49,16 @@
     <li>add policy to group:</li>
     </ul>
     <pre><code>mc admin policy <span class="hljs-keyword">set</span> ugloo policy1 <span class="hljs-keyword">group</span>=group1
-    </code></pre><h5 id="2-add-a-user-to-a-group-with-a-policy-already-applied">2 - add a user to a group with a policy already applied</h5>
+    </code></pre><p><br></p>
+    <hr>
+    <p>2 - add a user to a group with a policy already applied</p>
     <pre><code>mc admin <span class="hljs-keyword">user</span> <span class="hljs-title">add</span> ugloo userlogin2 userpasswd
     mc admin <span class="hljs-keyword">group</span> <span class="hljs-title">add</span> ugloo group1 userlogin2
     </code></pre><p>output</p>
     <pre><code>Added <span class="hljs-keyword">members</span> {userlogin2} <span class="hljs-keyword">to</span> <span class="hljs-keyword">group</span> <span class="hljs-keyword">group1</span> <span class="hljs-keyword">successfully</span>.
-    </code></pre><h5 id="3-add-a-group-to-an-existing-policy">3 - add a group to an existing policy</h5>
+    </code></pre><p><br></p>
+    <hr>
+    <p>3 - add a group to an existing policy</p>
     <ul>
     <li>create group2 with userlogin2 as user:</li>
     </ul>
@@ -65,7 +69,9 @@
     <pre><code>mc admin policy <span class="hljs-keyword">set</span> ugloo policy1 <span class="hljs-keyword">group</span>=group2
     </code></pre><p>output</p>
     <pre><code>Policy <span class="hljs-string">`policy1`</span> is <span class="hljs-built_in">set</span> <span class="hljs-keyword">on</span> <span class="hljs-keyword">group</span> <span class="hljs-string">`group2`</span>
-    </code></pre><h5 id="4-edit-group-policy-add-one-">4 - edit group policy / add one:</h5>
+    </code></pre><p><br></p>
+    <hr>
+    <p>4 - edit group policy / add one:</p>
     <pre><code>mc mb ugloo/bucket<span class="hljs-number">-2</span>
     </code></pre><p>policy2.json</p>
     <pre><code class="lang-json">{
@@ -119,8 +125,10 @@
     <span class="hljs-symbol">Status:</span> enabled
     <span class="hljs-symbol">Policy:</span> policy1
     <span class="hljs-symbol">Members:</span> userlogin,userlogin2
-    </code></pre><p><strong>SUPPRESSION d&#39;une politique avec unset : unset supprime la politique donnée, sur la cible</strong></p>
-    <h5 id="5-add-a-bucket-in-a-policy-">5 - add a bucket in a policy:</h5>
+    </code></pre><p><strong>SUPPRESSION d&#39;une politique avec unset : unset supprime la politique donnée, sur la cible</strong>
+    <br></p>
+    <hr>
+    <p>5 - add a bucket in a policy:</p>
     <pre><code>mc mb ugloo/bucket<span class="hljs-number">-3</span>
     </code></pre><p>policy1.json</p>
     <pre><code class="lang-json">{
@@ -147,8 +155,10 @@
     </code></pre>
     <pre><code>mc admin policy <span class="hljs-keyword">add</span><span class="bash"> ugloo policy1 policy1.json</span>
     </code></pre><p><strong>les modifications sont appliquées, tester en se connectant via un utilisateur d&#39;un groupe ou la politique est appliquée (mc alias set ugloo <a href="http://127.0.0.1:9000">http://127.0.0.1:9000</a> userlogin userpasswd)</strong></p>
-    <h5 id="crash-test-1-">Crash test 1:</h5>
-    <p>delete bucket in a policy while a put occurs in that same bucket (via a user benefiting that policy with PutObject)</p>
+    <p><br></p>
+    <hr>
+    <p>Crash test 1:
+    delete bucket in a policy while a put occurs in that same bucket (via a user benefiting that policy with PutObject)</p>
     <p>edit_policy_in_put.sh</p>
     <pre><code><span class="hljs-meta">#!/bin/bash</span>
     
@@ -218,8 +228,10 @@
     
     maxime@ugloopc11<span class="hljs-symbol">:~/Travail/update_minio_policies_groups_users</span>$ <span class="hljs-symbol">mc:</span> &lt;ERROR&gt; Failed to copy <span class="hljs-string">`/tmp/2G`</span>. Insufficient permissions to access this file <span class="hljs-string">`http://127.0.0.1:9000/bucket-1/2G_minio`</span>
     </code></pre><p><strong>error during put, when changing policy1</strong></p>
-    <h5 id="crash-test-2-">Crash test 2:</h5>
-    <p>delete bucket in a policy while a put occurs in another bucket in the same policy (via a user benefiting that policy with PutObject)</p>
+    <p><br></p>
+    <hr>
+    <p>Crash test 2:
+    delete bucket in a policy while a put occurs in another bucket in the same policy (via a user benefiting that policy with PutObject)</p>
     <pre><code>./edit_policy_in_put<span class="hljs-selector-class">.sh</span> bucket-<span class="hljs-number">3</span>
     </code></pre><p>output</p>
     <pre><code>Added `ugloo` successfully.
@@ -228,5 +240,5 @@
     </code></pre><pre><code>mc ls ugloo/bucket<span class="hljs-number">-3</span>
     </code></pre><p>output</p>
     <pre><code><span class="hljs-selector-attr">[2022-08-01 17:41:53 CEST]</span> 2<span class="hljs-selector-class">.0GiB</span> 2<span class="hljs-selector-tag">G_minio</span>
-    </code></pre><p><strong>no error, file is in the bucket even when removing another bucket from the same policy</strong></p>    
+    </code></pre><p><strong>no error, file is in the bucket even when removing another bucket from the same policy</strong></p>     
 </p>
