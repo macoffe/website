@@ -270,8 +270,13 @@ pre,
 code,
 kbd,
 samp {
+  color: black;
   font-family: var(--bs-font-monospace);
   font-size: 1em;
+  background-color: #111;
+  border-radius: 5px;
+  line-height: 1.2;
+  text-indent: 10px;
 }
 
 pre {
@@ -290,7 +295,6 @@ pre code {
 
 code {
   font-size: 0.875em;
-  color: var(--bs-code-color);
   word-wrap: break-word;
 }
 a > code {
@@ -4203,7 +4207,7 @@ textarea.form-control-lg {
   --bs-card-cap-bg: rgba(0, 0, 0, 0.03);
   --bs-card-cap-color: ;
   --bs-card-height: ;
-  --bs-card-color: ;
+  --bs-card-color: white;
   --bs-card-bg: #282828;
   --bs-card-img-overlay-padding: 1rem;
   --bs-card-group-margin: 0.75rem;
