@@ -1,0 +1,92 @@
+<h1 id="minio-ldap">minio-ldap</h1>
+<p>But: associer une instance LDAP à une instance minio basique pour gérer l&#39;indentification par un fournisseur externe.</p>
+<p>fichier docker-compose.yml:</p>
+<pre><code class="lang-yml"><span class="hljs-attribute">version</span>: '2'
+
+<span class="haml">services:
+
+  minio:
+    image: quay.io/minio/minio
+    ports:
+      -<span class="ruby"> <span class="hljs-string">'9000:9000'</span>
+</span>      -<span class="ruby"> <span class="hljs-string">'9090:9090'</span>
+</span>    networks:
+      -<span class="ruby"> ldap-minio-network
+</span>    environment:
+      -<span class="ruby"> MINIO_ROOT_USER=admin
+</span>      -<span class="ruby"> MINIO_ROOT_PASSWORD=password
+</span>      # - MINIO_IDENTITY_LDAP_SERVER_ADDR=openldap:1389
+      # - MINIO_IDENTITY_LDAP_LOOKUP_BIND_DN=CN=user01,OU=users,DC=ugloo,DC=com
+      # - MINIO_IDENTITY_LDAP_LOOKUP_BIND_PASSWORD=password1
+      # - MINIO_IDENTITY_LDAP_SERVER_INSECURE=on
+      # - MINIO_IDENTITY_LDAP_USER_DN_SEARCH_BASE_DN=DC=ugloo,DC=com
+      # - MINIO_IDENTITY_LDAP_USER_DN_SEARCH_FILTER=(cn=%s)
+
+    volumes:
+      -<span class="ruby"> <span class="hljs-string">'~/minio/data:/data'</span>
+</span>    command: server /data --console-address ":9090"
+
+  openldap:
+    image: docker.io/bitnami/openldap:2.6
+    ports:
+      -<span class="ruby"> <span class="hljs-string">'1389:1389'</span>
+</span>      -<span class="ruby"> <span class="hljs-string">'1636:1636'</span>
+</span>    networks:
+      -<span class="ruby"> ldap-minio-network
+</span>    environment:
+      # - LDAP_LOGLEVEL=-1
+      -<span class="ruby"> LDAP_ROOT=dc=ugloo,dc=com
+</span>      -<span class="ruby"> LDAP_ADMIN_USERNAME=admin
+</span>      -<span class="ruby"> LDAP_ADMIN_PASSWORD=adminpassword
+</span>      -<span class="ruby"> LDAP_USERS=user01,user02
+</span>      -<span class="ruby"> LDAP_PASSWORDS=password1,password2
+</span>    volumes:
+      -<span class="ruby"> <span class="hljs-string">'openldap_data:/bitnami/openldap'</span>
+</span>
+volumes:
+  openldap_data:
+    driver: local
+
+networks:
+  ldap-minio-network:
+    external: true</span>
+</code></pre>
+<hr>
+<h3 id="configuration-via-web-ui-">Configuration via Web UI:</h3>
+<ul>
+<li>déployer un conteneur minio et un conteneur LDAP dans un réseau bridge (docker-compose.yml fournit):</li>
+</ul>
+<pre><code class="lang-bash">docker-compose up <span class="hljs-_">-d</span>
+</code></pre>
+<ul>
+<li><p>se rendre sur l&#39;interface web de minio (<strong><a href="http://127.0.0.1:9090">http://127.0.0.1:9090</a></strong>), et se connecter avec l&#39;<em>Username</em> <strong>admin</strong> et le <em>Password</em> <strong>password</strong></p>
+</li>
+<li><p>aller dans l&#39;onglet <strong>Configurations</strong> à gauche, puis dans <strong>Identity LDAP</strong></p>
+</li>
+<li><p>remplir une configuration similaire à celle-ci (attention, ne pas utiliser l&#39;ip 127.0.0.1, mais plutôt l&#39;ip réelle de la machine sur laquelle minio est hébergé):</p>
+</li>
+</ul>
+<p><img src="/var/www/html/topics/s3/images_a2/ldap-minio-webui-config.png" alt=""></p>
+<ul>
+<li><p>sauvegarder (<em>Save</em>) et redémarrer l&#39;instance minio (<em>une banière est apparut pour ça en haut de la page</em>)</p>
+</li>
+<li><p>assigner une politique à chaque DN voulu, par exemple, <strong>(cn=user01,ou=users,dc=example,dc=org)</strong> ou <strong>(cn=user02,ou=users,dc=example,dc=org)</strong> (informations d&#39;un compte utilisateur ldap):</p>
+</li>
+</ul>
+<pre><code class="lang-bash">mc admin policy <span class="hljs-keyword">set</span> ugloo consoleAdmin <span class="hljs-keyword">user</span>=<span class="hljs-string">'cn=user01,ou=users,dc=example,dc=org'</span>
+mc <span class="hljs-keyword">admin</span> <span class="hljs-keyword">policy</span> <span class="hljs-keyword">set</span> ugloo policy1 policy1.json <span class="hljs-keyword">user</span>=<span class="hljs-string">'cn=user01,ou=users,dc=example,dc=org'</span>
+</code></pre>
+<ul>
+<li>se déconnecter et se reconnecter à l&#39;interface web minio avec un compte utilisateur LDAP ayant une politique associée pour confirmer le bon fonctionnement de l&#39;association ldap-minio.</li>
+</ul>
+<hr>
+<h3 id="configuration-via-variable-d-environnement-">Configuration via variable d&#39;environnement:</h3>
+<ul>
+<li><p>décommentez les variables d&#39;environnement de minio dans le fichier <strong>docker-compose.yml</strong></p>
+</li>
+<li><p>déployer un conteneur minio et un conteneur LDAP dans un réseau bridge:</p>
+</li>
+</ul>
+<pre><code class="lang-bash">docker-compose up <span class="hljs-_">-d</span>
+</code></pre>
+<p>NB: pour purger la configuration LDAP dans minio, il faut supprimer le dossier ~/minio/data</p>

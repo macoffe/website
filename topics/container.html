@@ -6,14 +6,14 @@
         <title>macoffe</title>
         <meta name="description" content="macoffe website.">
         <meta name="author" content="macoffe">
-        <link rel="stylesheet" href="bootstrap.css">
-        <script src="script.js"></script>
+        <link rel="stylesheet" href="../bootstrap.css">
+        <script src="../script.js"></script>
     </head>
 
     <body>
         <div class="navbar navbar-expand-lg fixed-top navbar-dark bg-dark">
             <div class="container">
-                <a href="home.html" class="navbar-brand">macoffe</a>
+                <a href="../home.html" class="navbar-brand">macoffe</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
@@ -26,13 +26,13 @@
                             <a class="nav-link" href="#">Network</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="topics/container.html">Container</a>
+                            <a class="nav-link" href="container.html">Container</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="#">Git</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="topics/s3.html">s3</a>
+                            <a class="nav-link" href="s3.html">s3</a>
                         </li>
                     </ul>
                     <ul class="navbar-nav ms-md-auto">
@@ -45,25 +45,36 @@
         </div>
 
         <div class="container">
-            <div class="page-header" id="banner" style="margin-top: 100px;">
-                <div class="row">
-                    <div class="col-lg-12 col-md-7 col-sm-8">
-                        <h4 id="card">Who am I ?</h4>
+            <div class="bs-docs-section" style="margin-top: 100px;">      
+                <div class="row mb-5">
+                    <div class="col-lg-2">
+                        <h4 id="nav-pills">Subject</h4>
                         <div class="bs-component">
-                            <div class="card">
-                                <div class="card-body">
-                                    <p class="card-text">Junior systems and networks administrator, if all goes well,
-                                    I will have a master's degree in summer 2023 in system and network administration 
-                                    (Ingénierie des Systèmes et Réseaux Informatiques, Université de Picardie Jules Verne).</p>
-                                </div>
+                            <ul class="nav nav-pills flex-column">
+                                <li class="nav-item">
+                                    <a class="nav-link" href="#article1">Quay: d&eacute;p&ocirc;t d'images de conteneur</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-lg-10">
+                        <h4>Notes</h4>
+                        <div class="bs-component">
+                            <h6>Quay: d&eacute;p&ocirc;t d'images de conteneur</h6>
+                            <div class="card" id="article1">
+                                <div class="card-body" w3-include-html="container/quay.html"></div>
                             </div>
+                            <br>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-  
-    <script src="bootstrap.bundle.min.js" integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa" crossorigin="anonymous"></script>
+
+        <script>
+        includeHTML();
+        </script>
+        <script src="../bootstrap.bundle.min.js" integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa" crossorigin="anonymous"></script>
 
     </body>
 </html>

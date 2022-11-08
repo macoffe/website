@@ -1,0 +1,154 @@
+<h4 id="quay-io">Quay.io</h4>
+<p>Pour avoir un repository privé, il faut payer, on peut avoir un/des repository public gratuit. abonnement mensuel.</p>
+<ul>
+<li>il faut se créer un compte red hat, pour cela, se rendre sur <a href="https://quay.io">https://quay.io</a>, puis cliquer sur &quot;SIGN IN&quot; en haut à droite, puis &quot;Créer un compte Red Hat&quot; sur la page qui vient de s&#39;ouvrir, et enfin remplir les informations demandées.</li>
+</ul>
+<p><img src="container/images_a1/quay.io_signin.png" alt="" style="max-width:100%;max-height:100%;"></p>
+<p><br></p>
+<p><img src="container/images_a1/quay.io_RH-compte.png" alt="" style="max-width:100%;max-height:100%;"></p>
+<ul>
+<li>après s&#39;être connecté sur le site <a href="https://quay.io">https://quay.io</a> avec son compte red hat, il faut créer son mot de passe (en haut à droite sur le nom du compte, puis account settings, puis set/change password).</li>
+</ul>
+<p><img src="container/images_a1/quay.io_password.png" alt="" style="max-width:100%;max-height:100%;"></p>
+<h5 id="utilisation-de-quay-io">Utilisation de quay.io</h5>
+<ul>
+<li>se connecter a quay depuis un terminal via docker, en rentrant les informations du compte nouvellement créé:</li>
+</ul>
+<pre><code><span class="hljs-selector-tag">docker</span> <span class="hljs-selector-tag">login</span> <span class="hljs-selector-tag">quay</span><span class="hljs-selector-class">.io</span>
+</code></pre><ul>
+<li>création et exécution d&#39;un conteneur:</li>
+</ul>
+<pre><code>docker <span class="hljs-keyword">run</span><span class="bash"> busybox <span class="hljs-built_in">echo</span> <span class="hljs-string">"fun"</span> &gt; newfile</span>
+</code></pre><ul>
+<li>récupérer l&#39;id du conteneur avec:</li>
+</ul>
+<pre><code>docker ps <span class="hljs-_">-l</span>
+</code></pre><ul>
+<li>commit notre conteneur en image et lui donner un nom:</li>
+</ul>
+<pre><code>docker commit <span class="hljs-number">4</span>b483aff1bca quay.io<span class="hljs-regexp">/macoffe/</span>testing
+</code></pre><ul>
+<li>push cette image:</li>
+</ul>
+<pre><code>docker <span class="hljs-keyword">push</span> quay.io<span class="hljs-regexp">/macoffe/</span>testing
+</code></pre><ul>
+<li>on peut constater l&#39;apparition du repository &quot;testing&quot; sur l&#39;interface web. Le repository quay.io est semblable au repository git, il permet de garder une trace des version d&#39;une image, différencier plusieurs versions avec des tags, garde une trace de log, ... Il est censé être consacré à une image en particulier.</li>
+</ul>
+<p><img src="container/images_a1/quay.io_repo.png" alt="" style="max-width:100%;max-height:100%;"></p>
+<p><strong>on peut maintenant configurer un build trigger en cliquant sur le repo, puis sur l&#39;icone correspondante à gauche (Builds). ça permet par exemple de build une image à partir d&#39;un fichier Dockerfile d&#39;un projet Gitlab à chaque fois qu&#39;un push est effectué sur ce projet.</strong></p>
+<p><img src="container/images_a1/quay.io_build-trigger.png" alt="" style="max-width:100%;max-height:100%;"></p>
+<ul>
+<li>pull l&#39;image voulu à partir de notre nouveau repository:</li>
+</ul>
+<pre><code>docker pull quay.io<span class="hljs-regexp">/macoffe/</span>testing
+</code></pre><p><strong>on peut aussi retourner à une version précédente, en cliquant sur le repo, puis sur l&#39;icone (Tag History) à gauche, colonne (REVERT)</strong></p>
+<p><img src="container/images_a1/quay.io_revert-tag.png" alt="" style="max-width:100%;max-height:100%;"></p>
+<h4 id="red-hat-quay">Red Hat Quay</h4>
+<p>Utilisation via achat d&#39;une licence, et non abonnement. Déploiement du service quay à faire manuellement sur un serveur personnel, en déployant un conteneur quay, un redis et un postgres (database). à faire sur RHEL avec un abonnement valide.</p>
+<p><a href="https://access.redhat.com/documentation/en-us/red_hat_quay/3.7/html/deploy_red_hat_quay_for_proof-of-concept_non-production_purposes/getting_started_with_red_hat_quay#configuring_the_red_hat_enterprise_linux_server">https://access.redhat.com/documentation/en-us/red_hat_quay/3.7/html/deploy_red_hat_quay_for_proof-of-concept_non-production_purposes/getting_started_with_red_hat_quay#configuring_the_red_hat_enterprise_linux_server</a></p>
+<h4 id="quay-project">Quay Project</h4>
+<p>Déploiement du service quay à faire manuellement sur un serveur personnel, en déployant un conteneur quay, un redis et un postgres (database). Pas d&#39;abonnement ni d&#39;achat de licence requis, projet open source.</p>
+<p><a href="https://github.com/quay/quay/blob/master/docs/quick-local-deployment.md">https://github.com/quay/quay/blob/master/docs/quick-local-deployment.md</a></p>
+<ul>
+<li>modifier /etc/hosts pour accéder à la future interface web plus facilement:</li>
+</ul>
+<pre><code>sudo nano <span class="hljs-regexp">/etc/</span>hosts
+</code></pre><p>ajouter:</p>
+<pre><code>127<span class="hljs-selector-class">.0</span><span class="hljs-selector-class">.0</span><span class="hljs-selector-class">.1</span>   <span class="hljs-selector-tag">quay</span>
+</code></pre><ul>
+<li>créer un dossier dans lequel se trouveront les fichiers nécessaires au fonctionnement de quay, ainsi que l&#39;arborescence:</li>
+</ul>
+<pre><code><span class="hljs-built_in">mkdir</span> projectquay
+<span class="hljs-built_in">mkdir</span> projectquay/postgres
+<span class="hljs-built_in">mkdir</span> projectquay/<span class="hljs-built_in">config</span>
+<span class="hljs-built_in">mkdir</span> projectquay/storage
+</code></pre><ul>
+<li>changer les permissions sur l&#39;arborescence:</li>
+</ul>
+<pre><code>setfacl -m <span class="hljs-symbol">u:</span><span class="hljs-number">26</span><span class="hljs-symbol">:-wx</span> projectquay/postgres
+setfacl -m <span class="hljs-symbol">u:</span><span class="hljs-number">1001</span><span class="hljs-symbol">:-wx</span> projectquay/storage
+</code></pre><ul>
+<li>déployer un postgres pour la database:</li>
+</ul>
+<pre><code>docker run -d --rm --name postgresql \
+        -e POSTGRES_USER=user \
+        -e POSTGRES_PASSWORD=pass \
+        -e POSTGRES_DB=quay \
+        -p <span class="hljs-number">5432</span>:<span class="hljs-number">5432</span> \
+        -v $QUAY/<span class="hljs-symbol">postgres:</span>/var/<span class="hljs-class"><span class="hljs-keyword">lib</span>/<span class="hljs-title">postgresql</span>/<span class="hljs-title">data</span>:<span class="hljs-title">Z</span> \</span>
+        <span class="hljs-symbol">postgres:</span><span class="hljs-number">10.12</span>
+</code></pre><ul>
+<li>vérifier la présence du module <em>pg_trgm</em> dans postgres (quay en a besoin):</li>
+</ul>
+<pre><code>docker exec -it postgresql /bin/bash -c 'echo "<span class="hljs-keyword">CREATE</span> EXTENSION <span class="hljs-keyword">IF</span> <span class="hljs-keyword">NOT</span> <span class="hljs-keyword">EXISTS</span> pg_trgm<span class="hljs-string">" | psql -d quay -U user'
+CREATE EXTENSION</span>
+</code></pre><ul>
+<li>déployer un redis pour les actions des utilisateurs et les build (coordination et logs):</li>
+</ul>
+<pre><code>docker <span class="hljs-built_in">run</span> -d <span class="hljs-comment">--rm --name redis \</span>
+        -p <span class="hljs-number">6379</span>:<span class="hljs-number">6379</span> \
+        redis:<span class="hljs-number">5.0</span><span class="hljs-number">.7</span> \
+        <span class="hljs-comment">--requirepass strongpassword</span>
+</code></pre><ul>
+<li>déployer maintenant un conteneur de quay en mode configuration, cela nous permettra, après avoir renseigné la configuration voulue, de générer un fichier de configuration pour déployer quay comme on le souhaite:</li>
+</ul>
+<pre><code>docker <span class="hljs-built_in">run</span> <span class="hljs-comment">--rm -it --name quay_config -p 8080:8080 quay.io/projectquay/quay config secret</span>
+</code></pre><ul>
+<li>puis se rendre sur <a href="http://quay:8080">http://quay:8080</a> (ou <a href="http://localhost:8080">http://localhost:8080</a>), et se connecter avec <em>quayconfig</em> comme nom d&#39;utilisateur, et <em>secret</em> comme mot de passe</li>
+</ul>
+<p><img src="container/images_a1/projectquay_config-login.png" alt="" style="max-width:100%;max-height:100%;"></p>
+<ul>
+<li>dans un terminal, récupérer l&#39;adresse ip de postgre:</li>
+</ul>
+<pre><code>docker inspect <span class="hljs-_">-f</span> <span class="hljs-string">"{{.NetworkSettings.IPAddress}}"</span> postgresql
+</code></pre><ul>
+<li>Dans la section <strong>Database</strong>, sélectionner postgres, dans host donner l&#39;adresse ip obtenue à l&#39;étape précédente, <em>user</em> dans user, <em>pass</em> dans password, et <em>quay</em> dans database:</li>
+</ul>
+<p><img src="container/images_a1/projectquay_config-database.png" alt="" style="max-width:100%;max-height:100%;"></p>
+<ul>
+<li>Dans la section <strong>Server Configuration</strong>, dans Server Hostname entrer <em>quay:8080</em> et <em>None</em> dans TLS:</li>
+</ul>
+<p><img src="container/images_a1/projectquay_config-serverconfig.png" alt="" style="max-width:100%;max-height:100%;"></p>
+<ul>
+<li>dans un terminal, récupérer l&#39;adresse ip de redis:</li>
+</ul>
+<pre><code>docker inspect <span class="hljs-_">-f</span> <span class="hljs-string">"{{.NetworkSettings.IPAddress}}"</span> redis
+</code></pre><ul>
+<li>Dans la section <strong>Redis</strong>, dans Redis Hostname donner l&#39;adresse ip obtenue à l&#39;étape précédente, et <em>strongpassword</em> dans Redis Password:</li>
+</ul>
+<p><img src="container/images_a1/projectquay_config-redis.png" alt="" style="max-width:100%;max-height:100%;"></p>
+<ul>
+<li>Cliquer sur le bouton de validation <strong>Validate Configuration Changes</strong>:</li>
+</ul>
+<p><img src="container/images_a1/projectquay_config-button.png" alt="" style="max-width:100%;max-height:100%;"></p>
+<ul>
+<li>Si tout c&#39;est bien passé, un message de validation apparaît, avec la possibilité de télécharger la config, cliquer sur <strong>Download</strong></li>
+</ul>
+<p><img src="container/images_a1/projectquay_config-dl.png" alt="" style="max-width:100%;max-height:100%;"></p>
+<ul>
+<li>Copier l&#39;archive téléchargée dans le dossier config de l&#39;arborescence, et la désarchiver:</li>
+</ul>
+<pre><code>cp ~/Téléchargements/quay-config<span class="hljs-selector-class">.tar</span><span class="hljs-selector-class">.gz</span> config/
+cd config/
+tar xvf quay-config<span class="hljs-selector-class">.tar</span><span class="hljs-selector-class">.gz</span>
+</code></pre><ul>
+<li>Stopper le conteneur de configuration quay, et relancer un nouveau conteneur quay, cette fois-ci pas en mode config, en partageant les bons dossiers:</li>
+</ul>
+<pre><code>docker <span class="hljs-built_in">stop</span> quay_config
+</code></pre><pre><code>docker run --rm -p 8080:8080 \
+    -<span class="ruby">-name=quay \
+</span>    -<span class="ruby">-privileged=<span class="hljs-literal">true</span> \
+</span>    -<span class="ruby">v ~<span class="hljs-regexp">/Travail/quay</span><span class="hljs-regexp">/projectquay/config</span><span class="hljs-symbol">:/conf/stack</span><span class="hljs-symbol">:Z</span> \
+</span>    -<span class="ruby">v ~<span class="hljs-regexp">/Travail/quay</span><span class="hljs-regexp">/projectquay/storage</span><span class="hljs-symbol">:/datastorage</span><span class="hljs-symbol">:Z</span> \
+</span>    -<span class="ruby">d quay.io/projectquay/<span class="hljs-symbol">quay:</span>latest</span>
+</code></pre><ul>
+<li>se rendre sur <a href="http://quay:8080">http://quay:8080</a> et créer un compte à partir de l&#39;interface web:</li>
+</ul>
+<p><img src="container/images_a1/projectquay_create-account.png" alt="" style="max-width:100%;max-height:100%;">
+<img src="container/images_a1/projectquay_create-account2.png" alt="" style="max-width:100%;max-height:100%;"></p>
+<ul>
+<li>Quay est maintenant déployé:</li>
+</ul>
+<p><img src="container/images_a1/projectquay_fini.png" alt="" style="max-width:100%;max-height:100%;"></p>
+<p><br><br></p>
+<p>Side note: Configurer de l&#39;HA ? Configurer Clair (scan les images pour trouver de potentielles failles) ?</p>
